@@ -1,0 +1,62 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'building'
+version = '0.0.1-SNAPSHOT'
+description = 'building-duck'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot Starters
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+
+    // Kotlin
+    implementation('org.jetbrains.kotlin:kotlin-reflect')
+    implementation('com.fasterxml.jackson.module:jackson-module-kotlin')
+
+    // Database
+    runtimeOnly('com.mysql:mysql-connector-j')
+
+    // Redis
+    implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
+    // JWT
+    implementation('io.jsonwebtoken:jjwt-api:0.12.5')
+    runtimeOnly('io.jsonwebtoken:jjwt-impl:0.12.5')
+    runtimeOnly('io.jsonwebtoken:jjwt-jackson:0.12.5')
+
+    // Swagger/OpenAPI
+    implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0')
+
+    // AWS S3
+    implementation('com.amazonaws:aws-java-sdk-s3:1.12.765')
+}
+
+kotlin {
+    compilerOptions {
+        // Kotlin 1.9.25에서는 아래 플래그가 지원되지 않아 경고/환경에 따라 빌드가 불안정해질 수 있음
+        // (필요하면 Kotlin 2.x로 올린 뒤 다시 추가)
+        freeCompilerArgs.addAll '-Xjsr305=strict'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
