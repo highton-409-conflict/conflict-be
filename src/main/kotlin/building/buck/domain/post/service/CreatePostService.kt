@@ -106,7 +106,6 @@ class CreatePostService(
                 UserNotification(
                     user = user,
                     notification = notification,
-                    isRead = false
                 )
             )
         }

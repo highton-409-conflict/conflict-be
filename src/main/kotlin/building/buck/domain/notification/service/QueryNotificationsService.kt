@@ -22,7 +22,6 @@ class QueryNotificationsService(
                 body = un.notification.body,
                 type = un.notification.type,
                 link = un.notification.link,
-                isRead = un.isRead,
                 createdAt = un.notification.createdAt!!
             )
         }

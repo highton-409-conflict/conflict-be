@@ -14,6 +14,5 @@ data class NotificationItem(
     val body: String,
     val type: NotificationType,
     val link: UUID?,
-    val isRead: Boolean,
     val createdAt: LocalDateTime
 )

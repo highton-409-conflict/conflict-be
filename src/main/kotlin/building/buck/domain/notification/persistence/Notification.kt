@@ -14,7 +14,7 @@ class Notification(
     val body: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     val type: NotificationType,
 
     @Column(nullable = false, columnDefinition = "BINARY(16)")

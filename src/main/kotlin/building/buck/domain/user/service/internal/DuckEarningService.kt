@@ -1,32 +1,38 @@
 package building.buck.domain.user.service.internal
 
-import building.buck.domain.collection.persistence.repository.CollectionRepositoryExtended
+import building.buck.domain.collection.persistence.repository.CollectionRepository
 import building.buck.domain.collection.persistence.repository.SelectCollectionRepository
-import building.buck.domain.notification.persistence.repository.NotificationRepository
-import building.buck.domain.notification.persistence.repository.UserNotificationRepository
 import building.buck.domain.user.persistence.DailyActivity
 import building.buck.domain.user.persistence.User
 import building.buck.domain.user.persistence.repository.DailyActivityRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 @Component
 class DuckEarningService(
-    private val collectionRepository: CollectionRepositoryExtended,
+    private val collectionRepository: CollectionRepository,
     private val dailyActivityRepository: DailyActivityRepository,
     private val selectCollectionRepository: SelectCollectionRepository
 ) {
+    private val logger = LoggerFactory.getLogger(DuckEarningService::class.java)
+
     @Transactional
     fun earnDuckForPost(user: User) {
+        logger.info("earnDuckForPost called for user: ${user.id}")
+
         val activity = dailyActivityRepository.findById(user.id.toString())
             .orElse(DailyActivity(user.id.toString()))
 
-        if (activity.hasPostedToday) return // Already earned today
+        if (activity.hasPostedToday) {
+            logger.info("User ${user.id} has already posted today")
+            return
+        }
 
         earnDuck(user)
         activity.hasPostedToday = true
         dailyActivityRepository.save(activity)
+        logger.info("Daily activity saved for user: ${user.id}")
     }
 
     @Transactional
@@ -42,11 +48,24 @@ class DuckEarningService(
     }
 
     private fun earnDuck(user: User) {
-        var collection = selectCollectionRepository.findByUserId(user.id!!)?.collection ?: return
+        val selectCollection = selectCollectionRepository.findByUserId(user.id!!)
+
+        if (selectCollection == null) {
+            logger.warn("No selected collection found for user: ${user.id}")
+            return
+        }
+
+        val collection = collectionRepository.findById(selectCollection.collection.id!!)
+            .orElseThrow { IllegalStateException("Collection not found") }
+
+        logger.info("Current duck count: ${collection.duck}")
 
         if (collection.duck < 7) {
             collection.duck += 1
             collectionRepository.save(collection)
+            logger.info("Duck increased to: ${collection.duck} for user: ${user.id}")
+        } else {
+            logger.info("Duck already at max (7) for user: ${user.id}")
         }
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.RedisHash
 @RedisHash(value = "daily_activity", timeToLive = 86400) // 24 hours
 class DailyActivity(
     @Id
-    val userId: String, // user.id.toString()
+    val userId: String,
     var hasPostedToday: Boolean = false,
-    var hasFollowedToday: Boolean = false
+    var hasFollowedToday: Boolean = false,
 )

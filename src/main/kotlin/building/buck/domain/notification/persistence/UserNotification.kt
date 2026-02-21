@@ -20,7 +20,4 @@ class UserNotification(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_id", nullable = false)
     val notification: Notification,
-
-    @Column(nullable = false)
-    var isRead: Boolean = false
 ) : BaseEntity()
