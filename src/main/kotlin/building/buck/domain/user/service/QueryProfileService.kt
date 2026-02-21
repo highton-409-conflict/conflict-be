@@ -28,7 +28,7 @@ class QueryProfileService(
         val timeline = timelineRepository.findByUserId(user.id!!) ?: throw TimelineItemNotFoundException
         val timelineItems = timelineItemRepository.findAllByTimelineId(timeline.id!!)
         val selectCollection = selectCollectionRepository.findByUserId(user.id!!)
-        val userCollection = selectCollection?.id?.let { collectionRepository.findById(it).orElseThrow() }
+        val userCollection = selectCollection?.collection?.let { collectionRepository.findById(it.id!!).orElseThrow() }
 
         return QueryProfileRes(
             name = user.name,

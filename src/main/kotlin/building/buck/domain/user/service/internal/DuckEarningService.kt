@@ -29,10 +29,13 @@ class DuckEarningService(
             return
         }
 
-        earnDuck(user)
-        activity.hasPostedToday = true
-        dailyActivityRepository.save(activity)
-        logger.info("Daily activity saved for user: ${user.id}")
+        // earnDuck이 성공한 경우에만 activity 업데이트
+        val success = earnDuck(user)
+        if (success) {
+            activity.hasPostedToday = true
+            dailyActivityRepository.save(activity)
+            logger.info("Daily activity saved for user: ${user.id}")
+        }
     }
 
     @Transactional
@@ -42,17 +45,20 @@ class DuckEarningService(
 
         if (activity.hasFollowedToday) return
 
-        earnDuck(user)
-        activity.hasFollowedToday = true
-        dailyActivityRepository.save(activity)
+        // earnDuck이 성공한 경우에만 activity 업데이트
+        val success = earnDuck(user)
+        if (success) {
+            activity.hasFollowedToday = true
+            dailyActivityRepository.save(activity)
+        }
     }
 
-    private fun earnDuck(user: User) {
+    private fun earnDuck(user: User): Boolean {
         val selectCollection = selectCollectionRepository.findByUserId(user.id!!)
 
         if (selectCollection == null) {
             logger.warn("No selected collection found for user: ${user.id}")
-            return
+            return false
         }
 
         val collection = collectionRepository.findById(selectCollection.collection.id!!)
@@ -64,8 +70,10 @@ class DuckEarningService(
             collection.duck += 1
             collectionRepository.save(collection)
             logger.info("Duck increased to: ${collection.duck} for user: ${user.id}")
+            return true
         } else {
             logger.info("Duck already at max (7) for user: ${user.id}")
+            return true // 이미 7개라도 성공으로 간주
         }
     }
 }

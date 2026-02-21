@@ -13,8 +13,8 @@ class UpdateProfileService(
     fun execute(req: UpdateProfileReq) {
         val user = userFacade.currentUser()
 
-        user.profile = req.image
-        user.introduce = req.introduce
+        req.image?.let { user.profile = req.image}
+        req.introduce?.let { user.introduce = req.introduce}
         req.name?.let { user.name = req.name }
     }
 }
