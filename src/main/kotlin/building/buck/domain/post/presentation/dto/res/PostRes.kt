@@ -7,7 +7,7 @@ data class PostRes(
     val id: UUID,
     val title: String,
     val content: String,
-    val authorId: UUID,
+    val authorId: String,
     val createdAt: LocalDateTime,
     val likes: Long,
     val isLiked: Boolean,

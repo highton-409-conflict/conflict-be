@@ -25,7 +25,7 @@ class GetPostsByTopicService(
                 id = post.id!!,
                 title = post.title,
                 content = post.content,
-                authorId = post.author.id!!,
+                authorId = post.author.accountId,
                 createdAt = post.createdAt!!,
                 likes = postLikeRepository.countByPostId(post.id!!),
                 tags = postTagRepository.findAllByPostId(post.id!!).map {

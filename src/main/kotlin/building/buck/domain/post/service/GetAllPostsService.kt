@@ -22,7 +22,7 @@ class GetAllPostsService(
                 id = it.id!!,
                 title = it.title,
                 content = it.content,
-                authorId = it.author.id!!,
+                authorId = it.author.accountId,
                 createdAt = it.createdAt!!,
                 likes = postLikeRepository.countByPostId(it.id!!),
                 tags = postTagRepository.findAllByPostId(it.id!!).map { TagRes(it.topic.id!!,it.topic.name) },

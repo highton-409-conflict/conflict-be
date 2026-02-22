@@ -48,16 +48,16 @@ class UserController(
 
     @Operation(summary = "프로필 조회")
     @GetMapping()
-    fun queryProfile(@RequestParam userId: UUID) = queryProfileService.execute(userId)
+    fun queryProfile(@RequestParam accountId: String) = queryProfileService.execute(accountId)
 
     @Operation(summary = "프로필 조회")
     @GetMapping("/my")
-    fun queryMyProfile() = queryProfileService.execute(userFacade.currentUser().id!!)
+    fun queryMyProfile() = queryProfileService.execute(userFacade.currentUser().accountId)
 
     @Operation(summary = "유저 팔로우")
-    @PostMapping("/{userId}/follow")
-    fun followUser(@PathVariable userId: UUID) {
-        followUserService.execute(userId)
+    @PostMapping("/{accountId}/follow")
+    fun followUser(@PathVariable accountId: String) {
+        followUserService.execute(accountId)
     }
 
     @Operation(summary = "팔로워 목록 조회")

@@ -19,20 +19,20 @@ class FollowUserService(
     private val duckEarningService: DuckEarningService
 ) {
     @Transactional
-    fun execute(userId: UUID) {
+    fun execute(accountId: String) {
         val follower = userFacade.currentUser()
 
-        if (follower.id!! == userId) throw CannotFollowSelfException
+        if (follower.accountId == accountId) throw CannotFollowSelfException
 
-        val following = userRepository.findById(userId)
-            .orElseThrow { UserNotFoundException }
+        val following = userRepository.findByAccountId(accountId)
+            ?: throw UserNotFoundException
 
-        val existing = userFollowingRepository.existsByFollowerIdAndFollowingId(follower.id!!, userId)
+        val existing = userFollowingRepository.existsByFollowerIdAndFollowingId(follower.id!!, following.id!!)
 
         if (existing) {
             // Unfollow: find and delete
             val relationship = userFollowingRepository.findAllByFollowerId(follower.id!!)
-                .first { it.following.id!! == userId }
+                .first { it.following.accountId == accountId }
             userFollowingRepository.delete(relationship)
         } else {
             // Follow

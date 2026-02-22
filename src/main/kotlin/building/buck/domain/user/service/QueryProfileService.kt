@@ -23,8 +23,8 @@ class QueryProfileService(
     private val collectionRepository: CollectionRepository,
     private val userFollowingRepository: UserFollowingRepository
 ) {
-    fun execute(userId: UUID): QueryProfileRes{
-        val user = userRepository.findById(userId).orElseThrow{UserNotFoundException}
+    fun execute(accountId: String): QueryProfileRes{
+        val user = userRepository.findByAccountId(accountId) ?: throw UserNotFoundException
         val timeline = timelineRepository.findByUserId(user.id!!) ?: throw TimelineItemNotFoundException
         val timelineItems = timelineItemRepository.findAllByTimelineId(timeline.id!!)
         val selectCollection = selectCollectionRepository.findByUserId(user.id!!)
@@ -35,7 +35,7 @@ class QueryProfileService(
             accountId = user.accountId,
             introduce = user.introduce,
             profileUrl = user.profile,
-            collectionUrl = userCollection?.image,
+            collectionUrl = "https://building-duck.s3.us-east-1.amazonaws.com/topics/lol/2.jpg",
             following = userFollowingRepository.countByFollowerId(user.id!!),
             followers = userFollowingRepository.countByFollowingId(user.id!!),
             timeline = timelineItems.map {
